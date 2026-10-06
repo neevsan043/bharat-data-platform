@@ -1,0 +1,84 @@
+version: 2
+
+models:
+  - name: dim_date
+    description: "Date dimension, one row per day from 2021-06-01 (UPI history start) to today."
+    columns:
+      - name: date_key
+        tests: [not_null, unique]
+      - name: date_day
+        tests: [not_null, unique]
+  - name: dim_geography
+    description: "Circles (TRAI LSAs), grid regions and weather cities with the project's circle-to-region mapping."
+    columns:
+      - name: geography_key
+        tests: [not_null, unique]
+      - name: level
+        tests:
+          - not_null
+          - accepted_values:
+              values: [circle, region, city]
+  - name: fct_upi_monthly
+    description: "UPI volume/value with MoM and YoY growth. Bank-wise concentration is not available (NPCI bank-wise stats are browser-gated; no drop landed)."
+    columns:
+      - name: month_start
+        tests: [not_null, unique]
+      - name: volume_mn
+        tests:
+          - not_null
+          - accepted_range:
+              min_value: 0
+              max_value: 200000
+      - name: avg_ticket_size_inr
+        tests:
+          - accepted_range:
+              min_value: 100
+              max_value: 10000
+  - name: fct_macro_indicators
+    description: "World Bank indicators with YoY growth."
+    columns:
+      - name: indicator_id
+        tests: [not_null]
+      - name: year
+        tests:
+          - not_null
+          - accepted_range:
+              min_value: 1950
+              max_value: 2026
+  - name: fct_energy_demand_weather_daily
+    description: "Regional daily demand/shortage joined with city-aggregated weather."
+    columns:
+      - name: report_date
+        tests: [not_null]
+      - name: region_name
+        tests:
+          - not_null
+          - relationships:
+              to: ref('dim_geography')
+              field: geography_name
+  - name: fct_telecom_subscribers
+    description: "Subscriber base by circle x operator x month with growth and circle share."
+    columns:
+      - name: period_month
+        tests: [not_null]
+      - name: subscribers
+        tests:
+          - not_null
+          - accepted_range:
+              min_value: 0
+              max_value: 500000000
+      - name: circle_share_pct
+        tests:
+          - accepted_range:
+              min_value: 0
+              max_value: 100
+  - name: fct_telecom_teledensity_circle
+    description: "Circle teledensity (wireline) by quarter."
+    columns:
+      - name: period_date
+        tests: [not_null]
+      - name: total_pct
+        tests:
+          - accepted_range:
+              min_value: 0
+              max_value: 500

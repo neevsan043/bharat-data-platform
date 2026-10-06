@@ -1,0 +1,7 @@
+bharat:
+  target: dev
+  outputs:
+    dev:
+      type: duckdb
+      path: data/gold/bharat.duckdb
+      threads: 2

@@ -1,0 +1,15 @@
+name: bharat_transform
+version: "0.1.0"
+config-version: 2
+profile: bharat
+
+model-paths: ["models"]
+
+models:
+  bharat_transform:
+    staging:
+      +materialized: view
+      +schema: silver
+    marts:
+      +materialized: table
+      +schema: gold

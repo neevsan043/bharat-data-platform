@@ -1,0 +1,54 @@
+version: 2
+
+models:
+  - name: stg_npci_upi_monthly
+    description: "Cleaned NPCI UPI monthly product statistics from silver."
+    columns:
+      - name: month_start
+        tests: [not_null, unique]
+      - name: volume_mn
+        tests:
+          - not_null
+          - accepted_range:
+              min_value: 0
+              max_value: 200000
+  - name: stg_worldbank_indicators
+    description: "Cleaned World Bank India indicator series from silver."
+    columns:
+      - name: year
+        tests:
+          - not_null
+          - accepted_range:
+              min_value: 1950
+              max_value: 2026
+  - name: stg_openmeteo_weather_daily
+    description: "Cleaned daily weather observations for 10 cities from silver."
+    columns:
+      - name: date
+        tests: [not_null]
+      - name: city
+        tests:
+          - not_null
+          - accepted_values:
+              values: [delhi, mumbai, kolkata, chennai, bengaluru, hyderabad, ahmedabad, pune, jaipur, lucknow, guwahati]
+  - name: stg_grid_supply_daily
+    description: "Grid-India daily supply position pivoted to columns (silver)."
+    columns:
+      - name: report_date
+        tests: [not_null]
+      - name: region_name
+        tests:
+          - not_null
+          - relationships:
+              to: ref('dim_geography')
+              field: geography_name
+  - name: stg_trai_subscribers
+    description: "TRAI subscriber base by circle x operator x month (silver)."
+    columns:
+      - name: period_month
+        tests: [not_null]
+      - name: segment
+        tests:
+          - not_null
+          - accepted_values:
+              values: [wireless, wireline]

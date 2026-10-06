@@ -1,0 +1,44 @@
+[build-system]
+requires = ["setuptools>=69"]
+build-backend = "setuptools.build_meta"
+
+[project]
+name = "bharat-data-platform"
+version = "0.1.0"
+description = "Data engineering platform and analytics product on public Indian datasets (UPI payments, macro indicators, grid energy, weather, telecom) - bronze/silver/gold on DuckDB."
+readme = "README.md"
+requires-python = ">=3.11"
+dependencies = [
+    "dagster>=1.7",
+    "dagster-webserver>=1.7",
+    "dagster-dbt>=0.24",
+    "dbt-duckdb>=1.8,<2",
+    "duckdb>=1.0",
+    "pandas>=2.2",
+    "polars>=1.0",
+    "pyarrow>=16",
+    "great-expectations>=0.18,<1",
+    "geopandas>=0.14",
+    "streamlit>=1.35",
+    "requests>=2.31",
+    "python-dotenv>=1.0",
+    "openpyxl>=3.1",
+    "pdfplumber>=0.11",
+    "xlrd>=2.0",
+]
+
+[project.optional-dependencies]
+dev = [
+    "pytest>=8",
+    "ruff>=0.4",
+]
+
+[tool.setuptools]
+packages = ["ingestion", "pipelines", "quality"]
+
+[tool.ruff]
+line-length = 120
+target-version = "py311"
+
+[tool.ruff.lint]
+select = ["E", "F", "I", "UP", "B"]
